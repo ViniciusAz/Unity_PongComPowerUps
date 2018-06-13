@@ -1,10 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.Windows.Speech;
 
 public class PlayerPaddle : MonoBehaviour {
 
-    public float speed = 2;
+    public float speed = 1;
 
     //default speed
     private float defaultSpeed;
@@ -19,21 +21,77 @@ public class PlayerPaddle : MonoBehaviour {
         timeCounter = 0;
     }
 
+
+    // Reconhecimento de voz
+
+    public string[] keywords = new string[] { "cima", "baixo" };
+    // ConfidenceLevel confidence = ConfidenceLevel.Medium;
+    ConfidenceLevel confidence = ConfidenceLevel.Low;
+    //public float speed = 1;
+
+    public Text results;
+    public Image target;
+
+    protected PhraseRecognizer recognizer;
+    protected string word = "para";
+
+    private void Start()
+    {
+        if (keywords != null)
+        {
+            recognizer = new KeywordRecognizer(keywords, confidence);
+            recognizer.OnPhraseRecognized += Recognizer_OnPhraseRecognized;
+            recognizer.Start();
+        }
+    }
+
+    private void Recognizer_OnPhraseRecognized(PhraseRecognizedEventArgs args)
+    {
+        word = args.text;
+        //results.text = "Você disse: <b>" + word + "</b>";
+    }
+
+
+
+
     private void Update()
     {
-        dir = Input.GetAxis("Vertical");
 
-        //reset speed
         speed = defaultSpeed;
-        
+
         //get the collider around the paddle
         Collider[] colliders = Physics.OverlapSphere(transform.position, transform.localScale.z / 2);
         //for each collider found
         foreach (Collider col in colliders)
         {
+            if (speed != 0)
+        {
+            print(message: word + " posição " + dir);
+            switch (word)
+            {
+                case "cima":
+                        if (dir < 18)
+                            dir = dir + speed;
+                        else
+                            dir = dir;
+                    break;
+                case "baixo":
+                        if (dir > -23)
+                            dir = dir - speed;
+                        else
+                            dir = dir;
+                        break;
+                case "para":
+                    dir = dir;
+                    break;
+
+            }
+        }
+        
             //if it is Border Top and it is going up, stop
             if (col.gameObject.name == "Border Top" && dir > 0)
             {
+                print(message: word + "BATI NO TOP posição " + dir);
                 speed = 0;
                 break;
             }
@@ -41,6 +99,7 @@ public class PlayerPaddle : MonoBehaviour {
             //if it is Border Bottom and it is going down, stop
             if (col.gameObject.name == "Border Bottom" && dir < 0)
             {
+                print(message: word + "BATI NO BOT posição " + dir);
                 speed = 0;
                 break;
             }
