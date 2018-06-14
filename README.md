@@ -7,7 +7,7 @@ Proposta do grupo: Fazer um sistema de controle baseado em reconhecimento de voz
 
 Pontifícia Universidade Católica do Rio Grande do Sul - PUCRS
 
-Curso : Ciência da Computação (2018-1)
+Curso : Ciência da Computação (Data: 2018-1)
 
 Disciplina : Projeto e Implementação de Sistemas Interativos (Profa. Dra. Soraia Raupp Musse)
 
