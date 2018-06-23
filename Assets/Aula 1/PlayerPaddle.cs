@@ -53,7 +53,7 @@ public class PlayerPaddle : MonoBehaviour {
         //for each collider found
         foreach (Collider col in colliders) {
             if (speed != 0) {
-		            print(message: word + " posição " + dir);
+		            //print(message: word + " posição " + dir);
 		            switch (word) {
 
                     //AQUI TA O PROBLEMA, O METODO DE PARADA ATUAL
@@ -102,7 +102,7 @@ public class PlayerPaddle : MonoBehaviour {
                 }
             }
 
-            print(message: word + " posição " + transform.position);
+            //print(message: word + " posição " + transform.position);
 
             // if (transform.position.z < 7.225 && transform.position.z > 7.025) {
             //   speed = 0;

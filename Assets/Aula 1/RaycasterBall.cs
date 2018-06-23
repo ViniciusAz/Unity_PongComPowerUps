@@ -63,8 +63,13 @@ public class RaycasterBall : MonoBehaviour {
             //reflect the velocity vector
             velocity = Vector3.Reflect(velocity, rh.normal);
 
+
             //update score if colliding with paddles
-            if (rh.transform.gameObject.tag == "Paddle")
+            if ((rh.transform.gameObject.tag == "PaddleR"))
+            {
+                gm.UpdateScore();
+            }
+            if ((rh.transform.gameObject.tag == "Paddle"))
             {
                 gm.UpdateScore();
             }

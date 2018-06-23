@@ -14,8 +14,10 @@ public class GameManager : MonoBehaviour {
 
     //score
     private int score;
+    private int scoreR;
     //canvas text
     private Text scoreText;
+    private Text scoreTextR;
     //time counter
     private float timeCounter;
     //time counter for reset power up
@@ -26,6 +28,7 @@ public class GameManager : MonoBehaviour {
         //start zeroed
         score = 0;
         timeCounter = timeCounterReset = 0;
+        scoreTextR = GameObject.FindGameObjectWithTag("ScoreR").GetComponent<Text>();
         scoreText = GameObject.FindGameObjectWithTag("Score").GetComponent<Text>();
     }
 
@@ -69,7 +72,15 @@ public class GameManager : MonoBehaviour {
         score += pointsToGrant;
 
         //update text in canvas
-        scoreText.text = "Score: " + score.ToString();
+        scoreText.text = score.ToString();
+    }
+
+    public void UpdateScoreR()
+    {
+        scoreR += pointsToGrant;
+
+        //update text in canvas
+        scoreTextR.text = scoreR.ToString();
     }
 
     //timer to reset score to original value
