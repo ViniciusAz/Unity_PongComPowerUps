@@ -67,11 +67,11 @@ public class RaycasterBall : MonoBehaviour {
             //update score if colliding with paddles
             if ((rh.transform.gameObject.tag == "PaddleR"))
             {
-                gm.UpdateScore();
+                gm.UpdateScore(1);
             }
             if ((rh.transform.gameObject.tag == "Paddle"))
             {
-                gm.UpdateScore();
+                gm.UpdateScore(1);
             }
         }//otherwise, just keep moving
         else

@@ -8,6 +8,7 @@ public class PhysicBall : MonoBehaviour {
     public Vector3 startForce;
     public ForceMode mode;
     private GameManager gm;
+    private int pf = 30;
     // Use this for initialization
     void Start () {
         gm = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<GameManager>();
@@ -36,24 +37,50 @@ public class PhysicBall : MonoBehaviour {
         }
     }
     private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.transform.gameObject.tag == "Paddle")
+    {   // Se o menu está ativo, a "bolinha" fica travada
+        if (collision.transform.gameObject.tag == "Bolinha")
         {
-            gm.UpdateScore();
-        }else if (collision.transform.gameObject.tag == "PaddleR"){
-            gm.UpdateScoreR();
+            //transform.position = Vector3.zero; // ISSO AQUI TA BUGANDO A BOLINHA, ai ela só se mexe para uma posição
+            // uma solução é tentar levantar as barreiras ao invés de sumir, vou ver o que fzer
+            // mas ´´e aqui o bug da bolinha!
+        }
+        else if (collision.transform.gameObject.tag == "Paddle")
+        { 
+            gm.UpdateScore(1);
+            if (gm.GetScore() >= pf)
+            {
+                
+                gm.endGame("ROXO");
+            }
+        }
+        else if (collision.transform.gameObject.tag == "PaddleR"){
+            gm.UpdateScoreR(1);
+            if (gm.GetScoreR() >= pf)
+            {
+                gm.endGame("AZUL");
+            }
         }
 
         // Se ir para atrás dos gols adiciona ponto para o rival
         if (collision.gameObject.tag == "FundoEsquerda")
         {
-            gm.UpdateScoreR();
+            gm.UpdateScoreR(10);
+            if (gm.GetScoreR() >= pf)
+            {
+                gm.endGame("AZUL");
+            }
             transform.position = Vector3.zero;
+
         }
         if (collision.gameObject.tag == "FundoDireita")
         {
-            gm.UpdateScore();
+            gm.UpdateScore(10);
+            if (gm.GetScore() >= pf)
+            {
+                gm.endGame("ROXO");
+            }
             transform.position = Vector3.zero;
+
         }
     }
 }

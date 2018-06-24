@@ -72,6 +72,8 @@ public class PlayerPaddle : MonoBehaviour {
     }
 
     private void Update() {
+
+
         speed = defaultSpeed;
         //get the collider around the paddle
         Collider[] colliders = Physics.OverlapSphere(transform.position, transform.localScale.z / 2);
@@ -79,8 +81,8 @@ public class PlayerPaddle : MonoBehaviour {
         //for each collider found
         foreach (Collider col in colliders) {
 
-print(message: gameObject.name + " - [ " + word + " ] | Origem: " + origem + " | Destino: " + destino + " | Z: " + gameObject.transform.position.z +
-" --- DIR " + dir);// + (Vector3 * 7.125f));
+//print(message: gameObject.name + " - [ " + word + " ] | Origem: " + origem + " | Destino: " + destino + " | Z: " + gameObject.transform.position.z +
+//" --- DIR " + dir);// + (Vector3 * 7.125f));
 
             // if (speed != 0) {
 		        //     switch (word) {
