@@ -25,7 +25,7 @@ public class PlayerPaddle : MonoBehaviour {
     }
 
     // Reconhecimento de voz
-    public string[] keywords = new string[] { "a", "b", "c", "d", "1", "2", "3", "4"};
+    public string[] keywords = new string[] { "alfa", "beta", "charlie", "delta", "1", "2", "3", "4"};
     // ConfidenceLevel confidence = ConfidenceLevel.Medium;
     ConfidenceLevel confidence = ConfidenceLevel.Low;
 
@@ -51,19 +51,19 @@ public class PlayerPaddle : MonoBehaviour {
         origem = destino;
         switch (word) {
             case "1":
-            case "a":
+            case "alfa":
                 destino = 7.125;
                 break;
             case "2":
-            case "b":
+            case "beta":
                 destino = 2.375;
                 break;
             case "3":
-            case "c":
+            case "charlie":
                 destino = -2.375;
                 break;
             case "4":
-            case "d":
+            case "delta":
                 destino = -7.125;
                 break;
         }

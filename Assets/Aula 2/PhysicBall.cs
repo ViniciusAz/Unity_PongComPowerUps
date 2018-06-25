@@ -40,9 +40,7 @@ public class PhysicBall : MonoBehaviour {
     {   // Se o menu está ativo, a "bolinha" fica travada
         if (collision.transform.gameObject.tag == "Bolinha")
         {
-            //transform.position = Vector3.zero; // ISSO AQUI TA BUGANDO A BOLINHA, ai ela só se mexe para uma posição
-            // uma solução é tentar levantar as barreiras ao invés de sumir, vou ver o que fzer
-            // mas ´´e aqui o bug da bolinha!
+            transform.position = Vector3.zero;
         }
         else if (collision.transform.gameObject.tag == "Paddle")
         { 

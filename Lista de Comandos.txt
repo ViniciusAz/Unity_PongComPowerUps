@@ -1,0 +1,30 @@
+Ultima atualização 25/06/2018
+
+Menu principal 
+                     
+	"Jogar solo" -> vai IA vs Humano
+                    
+	"Jogar contra" -> Humano vs Humano
+                       
+	"Controle" -> Menu com as instruções
+
+Menu de Pausa
+            
+        "Seguir" -> Volta para o jogo da onde ele parou
+         
+        "Menu" -> Volta para  o menu principal resetando o jogo
+      
+        "Controle" -> menu com as instruções
+
+Paddle Esquerda ( BRANCO)
+
+1
+2
+3
+4
+
+Paddle Direita ( preto ) 
+alfa
+beta
+charlie
+delta

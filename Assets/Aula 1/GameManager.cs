@@ -27,12 +27,23 @@ public class GameManager : MonoBehaviour {
     // Painel de final de jogo
     private Text fim;
 
-    //Menu
-    private GameObject menu;
-
     // Bolinha
+    private GameObject bola;
+
+    //Todas as váriaveis para o MENU
+    private GameObject menu;
+    private GameObject instrucoes;
+    private GameObject pause;
+    bool menuVisivel = true;
+    bool pauseVisivel = false;
+    bool instrucoesVisivel = false;
+
+    // Travas da Bolinha
     public GameObject[] bolinha;
 
+    //controle de paddles
+    private GameObject paddleIa;
+    private GameObject paddleHu;
 
     private void Awake()
     {
@@ -44,10 +55,17 @@ public class GameManager : MonoBehaviour {
         fim = GameObject.FindGameObjectWithTag("ENDGAME").GetComponent<Text>();
         menu = GameObject.FindGameObjectWithTag("Menu");
         bolinha = GameObject.FindGameObjectsWithTag("Bolinha");
+        instrucoes = GameObject.FindGameObjectWithTag("Instrucoes");
+        paddleIa = GameObject.FindGameObjectWithTag("PaddleIA");
+        paddleHu = GameObject.FindGameObjectWithTag("PaddleR");
+        instrucoes.active = false;
+        pause = GameObject.FindGameObjectWithTag("Pause");
+        pause.active = false;
+        bola = GameObject.FindGameObjectWithTag("Bola");
     }
 
     // Reconhecimento de voz
-    public string[] keywords = new string[] { "jogar", "menu" };
+    public string[] keywords = new string[] { "jogar solo", "jogar contra", "pause", "seguir", "menu", "Controle", "voltar" };
     // ConfidenceLevel confidence = ConfidenceLevel.Medium;
     ConfidenceLevel confidence = ConfidenceLevel.Low;
 
@@ -64,21 +82,124 @@ public class GameManager : MonoBehaviour {
         word = args.text;
         switch (word)
         {
-            case "jogar": 
-                menu.active = false;
-                for (int i = 0; i < bolinha.Length; i++)
+            case "jogar solo":   // Inicia o jogo zerado IA vs Humano
+                if (menuVisivel) //Se estiver com o menu aberto
                 {
-                    bolinha[i].active = false;
+                    //tem que ativar o paddle da IA
+                    paddleIa.active = true;
+                    //desativar o paddle HUMANO
+                    paddleHu.active = false;
+
+                    // Desativa todos os menus
+                    menu.active = false;
+                    instrucoes.active = false;
+                    menuVisivel = false;
+                    pauseVisivel = false;
+                    desativaBloqueio();
+                    limpaScores();
                 }
-                limpaScores();
                 break;
-            case "menu":
-                menu.active = true;
-                for (int i = 0; i < bolinha.Length; i++)
+            case "jogar contra":   // Inicia o jogo zerado IA vs Humano
+                if (menuVisivel) //Se estiver com o menu aberto
                 {
-                    bolinha[i].active = true;
+                    //ATivar o paddle humano
+                    paddleIa.active = false;
+                    //Desativar o paddle da IA
+                    paddleHu.active = true;
+
+                    // Desativa todos os menus
+                    menu.active = false;
+                    instrucoes.active = false;
+                    menuVisivel = false;
+                    pauseVisivel = false;
+                    desativaBloqueio();
+                    limpaScores();
                 }
                 break;
+            case "pause":    //Ativa o menu, e "pausa" o jogo!
+                if ((!menuVisivel) && (!pauseVisivel)) // Se estiver jogando
+                {
+                    pause.active = true;
+                    pauseVisivel = true;
+                    ativaBloqueio();
+                }
+                break;
+            case "seguir":    //Continua o jogo com os mesmos scores
+                if (pauseVisivel) // Se estiver pausado
+                {
+                    pause.active = false;
+                    pauseVisivel = false;
+                    desativaBloqueio();
+                }
+                break;
+            case "menu":    //Volta para o menu principal
+                if (pauseVisivel) // Se estiver pausado
+                {
+                    //Desativa o menu de pause
+                    pause.active = false;
+                    pauseVisivel = false;
+
+                    //Garante que as instruções estão off 
+                    instrucoes.active = false;
+
+                    // Ativa o menu principal
+                    menu.active = true;
+                    menuVisivel = true;
+
+                    ativaBloqueio();
+                    limpaScores();
+                }
+                break;
+            case "controle": //Instruções == Controles ( reconhecimento foi melhor com controles)
+                if (menuVisivel) // Se um menu estiver ativo
+                {
+                    menu.active = false; // Destiva o menu
+                    instrucoes.active = true; // ativa o menu de instruções
+                    instrucoesVisivel = true;
+                }else if (pauseVisivel)
+                {
+                       pause.active = false;
+                       instrucoes.active = true; // ativa o menu de instruções
+                       instrucoesVisivel = true;
+                }
+                break;
+            case ("voltar"):
+                if (instrucoesVisivel)
+                {
+                    //desativa as instruções
+                    instrucoes.active = false;
+                    instrucoesVisivel = false;
+                    if (menuVisivel)   //Se entrou nas instruções pelo menu, volta ao menu
+                    {
+                        //ativa o menu
+                        menu.active = true;
+                    }
+                    else if (pauseVisivel) // se entrou nas instruções pelo pause, volta ao pause
+                    {
+                        // ativa a pause
+                        pause.active = true;
+                    }
+                }
+                break;
+        
+
+        }
+    }
+
+    private void ativaBloqueio()
+    {
+        bola.transform.position = Vector3.zero;
+        for (int i = 0; i < bolinha.Length; i++)
+        {
+            bolinha[i].active = true;
+        }
+    }
+
+    private void desativaBloqueio()
+    {
+        for (int i = 0; i < bolinha.Length; i++)
+        {
+            bolinha[i].active = false;
         }
     }
 
@@ -91,6 +212,7 @@ public class GameManager : MonoBehaviour {
             recognizer.OnPhraseRecognized += Recognizer_OnPhraseRecognized;
             recognizer.Start();
         }
+        
     }
 	
 
