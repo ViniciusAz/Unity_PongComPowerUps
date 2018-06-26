@@ -9,6 +9,8 @@ public class PhysicBall : MonoBehaviour {
     public ForceMode mode;
     private GameManager gm;
     private int pf = 30;
+    private int bateu = 0; // 1 == jogador branco bateu na bolinha, 2 == jogador  bateu na bolinha, 0 == ninguem bateu
+    private GameObject aux;
     // Use this for initialization
     void Start () {
         gm = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<GameManager>();
@@ -16,46 +18,65 @@ public class PhysicBall : MonoBehaviour {
 	}
     private void OnTriggerExit(Collider other)
     {
-
-        // Antiga classe de bola fora!
+        startForce = new Vector3(5, 0, 10); //Coloca a bolinha com a força original
 
         //if leaves the boundary collider, game over
         if (other.gameObject.tag == "Boundary")
         {
-          //Debug.Log("Game Over! AQUI");
-           //reset the scene
-          //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
           transform.position = Vector3.zero;
         }
     }
     private void OnTriggerEnter(Collider other)
     {
-        //if it is some powerup
+        startForce = new Vector3(5, 0, 10); //Coloca a bolinha com a força original
+
         if (other.gameObject.tag == "PowerUp")
         {
-            other.gameObject.GetComponent<PowerUp>().DoStuff();
+            if (bateu == 1) // Branco bateu na bola por último e pegou uma moeda
+            {
+                gm.UpdateScore(2);
+                other.gameObject.active = false;
+                if (gm.GetScore() >= pf)
+                {
+                    gm.endGame(true);
+                }
+            }
+            else if (bateu == 2) // Preto bateu na bola por último e pegou uma moeda
+            {
+                gm.UpdateScoreR(2);
+                other.gameObject.active = false;
+                if (gm.GetScore() >= pf)
+                {
+                    gm.endGame(false);
+                }
+            }
         }
     }
+
     private void OnCollisionEnter(Collision collision)
-    {   // Se o menu está ativo, a "bolinha" fica travada
+    {
+        startForce = new Vector3(5, 0, 10); //Coloca a bolinha com a força original
+        // Se o menu está ativo, a "bolinha" fica travada
         if (collision.transform.gameObject.tag == "Bolinha")
         {
             transform.position = Vector3.zero;
         }
         else if (collision.transform.gameObject.tag == "Paddle")
-        { 
+        {
             gm.UpdateScore(1);
+            bateu = 1;
             if (gm.GetScore() >= pf)
             {
-                
-                gm.endGame("ROXO");
+                gm.endGame(true);
             }
         }
-        else if (collision.transform.gameObject.tag == "PaddleR"){
+        else if ((collision.transform.gameObject.tag == "PaddleR") || (collision.transform.gameObject.tag == "PaddleIA"))
+        {
             gm.UpdateScoreR(1);
+            bateu = 2;
             if (gm.GetScoreR() >= pf)
             {
-                gm.endGame("AZUL");
+                gm.endGame(false);
             }
         }
 
@@ -63,9 +84,10 @@ public class PhysicBall : MonoBehaviour {
         if (collision.gameObject.tag == "FundoEsquerda")
         {
             gm.UpdateScoreR(10);
+            bateu = 0;
             if (gm.GetScoreR() >= pf)
             {
-                gm.endGame("AZUL");
+                gm.endGame(false);
             }
             transform.position = Vector3.zero;
 
@@ -73,9 +95,10 @@ public class PhysicBall : MonoBehaviour {
         if (collision.gameObject.tag == "FundoDireita")
         {
             gm.UpdateScore(10);
+            bateu = 0;
             if (gm.GetScore() >= pf)
             {
-                gm.endGame("ROXO");
+                gm.endGame(true);
             }
             transform.position = Vector3.zero;
 

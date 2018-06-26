@@ -24,9 +24,6 @@ public class GameManager : MonoBehaviour {
     //time counter for reset power up
     private float timeCounterReset;
 
-    // Painel de final de jogo
-    private Text fim;
-
     // Bolinha
     private GameObject bola;
 
@@ -34,9 +31,12 @@ public class GameManager : MonoBehaviour {
     private GameObject menu;
     private GameObject instrucoes;
     private GameObject pause;
+    private GameObject egb; //End Game Branco
+    private GameObject egp; //End Game Preto
     bool menuVisivel = true;
     bool pauseVisivel = false;
     bool instrucoesVisivel = false;
+    bool fimDeJogo = false;
 
     // Travas da Bolinha
     public GameObject[] bolinha;
@@ -52,7 +52,6 @@ public class GameManager : MonoBehaviour {
         timeCounter = timeCounterReset = 0;
         scoreTextR = GameObject.FindGameObjectWithTag("ScoreR").GetComponent<Text>();
         scoreText = GameObject.FindGameObjectWithTag("Score").GetComponent<Text>();
-        fim = GameObject.FindGameObjectWithTag("ENDGAME").GetComponent<Text>();
         menu = GameObject.FindGameObjectWithTag("Menu");
         bolinha = GameObject.FindGameObjectsWithTag("Bolinha");
         instrucoes = GameObject.FindGameObjectWithTag("Instrucoes");
@@ -62,6 +61,10 @@ public class GameManager : MonoBehaviour {
         pause = GameObject.FindGameObjectWithTag("Pause");
         pause.active = false;
         bola = GameObject.FindGameObjectWithTag("Bola");
+        egb = GameObject.FindGameObjectWithTag("EndGameB");
+        egb.active = false;
+        egp = GameObject.FindGameObjectWithTag("EndGameP");
+        egp.active = false;
     }
 
     // Reconhecimento de voz
@@ -133,7 +136,7 @@ public class GameManager : MonoBehaviour {
                 }
                 break;
             case "menu":    //Volta para o menu principal
-                if (pauseVisivel) // Se estiver pausado
+                if (pauseVisivel && (!instrucoesVisivel)) // Se estiver pausado e não estiver nos controles!
                 {
                     //Desativa o menu de pause
                     pause.active = false;
@@ -145,6 +148,19 @@ public class GameManager : MonoBehaviour {
                     // Ativa o menu principal
                     menu.active = true;
                     menuVisivel = true;
+
+                    ativaBloqueio();
+                    limpaScores();
+                }else if (fimDeJogo)
+                {
+                    // Ativa o menu principal
+                    menu.active = true;
+                    menuVisivel = true;
+
+                    //Tira a tela de fim de jogo
+                    egb.active = false;
+                    egp.active = false;
+                    fimDeJogo = false;
 
                     ativaBloqueio();
                     limpaScores();
@@ -225,11 +241,10 @@ public class GameManager : MonoBehaviour {
         {
             //reset the time counter
             timeCounter = 0;
-
-            //powerUPS  --- ( Retirado por causa dos bugs <Derick> )
-           // GameObject newPowerUp = Instantiate(powerUpPrefab, new Vector3(Random.Range(-14, 14), 0, Random.Range(-9, 9)), Quaternion.identity);
-            //set the type as to make paddles bigger
-           // newPowerUp.GetComponent<PowerUp>().powerUpType = powerUpList[Random.Range(0, powerUpList.Count)];
+            if (!(menuVisivel || pauseVisivel || fimDeJogo))
+            { // Cria as moedas de forma random se não tem menu ativo
+                GameObject newPowerUp = Instantiate(powerUpPrefab, new Vector3(Random.Range(-14, 14), 0, Random.Range(-9, 9)), Quaternion.identity);
+            }
         }
 
         //if timer is set, score returns to normal after 5 seconds
@@ -239,17 +254,44 @@ public class GameManager : MonoBehaviour {
             if (timeCounterReset >= 5)
             {
                 timeCounterReset = 0;
-                ResetScore();
+                //ResetScore();
             }
         }
     }
     // ENDGAME score >= 100
 
-    public void endGame(string ganhador)
+    public void endGame(bool ganhador) // True == jogador branco ganhou, false == jogador preto ganhou
     {
         limpaScores(); // Primeiro limpa o score
-        fim.enabled = true;
-        fim.text = "FIM DE JOGO!  \n O jogador " + ganhador + " é o vencedor";
+        ativaBloqueio(); //Ativa o bloqueio da bolinha, fazendo ela ficar parada
+
+        //Tira qualquer tela possivel
+        menu.active = false;
+        instrucoes.active = false;
+        pause.active = false;
+        menuVisivel = false;
+        pauseVisivel = false;
+        instrucoesVisivel = false;
+
+        if (ganhador) // Branco ganhou
+        {
+
+            // Ativa Tela de fim de jogo 
+            egb.active = true;
+            fimDeJogo = true;
+
+            //Tira a tela de fim de jogo do adversário
+            egp.active = false;
+}
+        else // preto Ganhou
+        {
+            // Ativa Tela de fim de jogo 
+            egp.active = true;
+            fimDeJogo = true;
+
+            //Tira a tela de fim de jogo do adversário
+            egb.active = false;
+        }
     }
 
     // Limpa os dois scores score = 0, scoreR = 0
@@ -266,8 +308,7 @@ public class GameManager : MonoBehaviour {
     public void UpdateScore(int valor)
     {
         score += valor;
-        // Tira o texto de final de jogo
-        fim.enabled = false;
+
         //update text in canvas
         scoreText.text = score.ToString();
     }
@@ -275,8 +316,7 @@ public class GameManager : MonoBehaviour {
     public void UpdateScoreR(int valor)
     {
         scoreR += valor;
-        // Tira o texto de final de jogo
-        fim.enabled = false;
+
         //update text in canvas
         scoreTextR.text = scoreR.ToString();
     }
