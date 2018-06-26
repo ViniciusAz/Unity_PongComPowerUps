@@ -5,7 +5,7 @@ using UnityEngine;
 public class AIPaddle : MonoBehaviour {
 
     public Transform ball;
-    public float speed = 2;
+    public float speed = 1;
 
 	void FixedUpdate ()
     {

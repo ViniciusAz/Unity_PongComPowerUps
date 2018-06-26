@@ -84,43 +84,21 @@ public class PlayerPaddle : MonoBehaviour {
 //print(message: gameObject.name + " - [ " + word + " ] | Origem: " + origem + " | Destino: " + destino + " | Z: " + gameObject.transform.position.z +
 //" --- DIR " + dir);// + (Vector3 * 7.125f));
 
-            // if (speed != 0) {
-		        //     switch (word) {
-            //
-		        //         case "1":
-            //         case "a":
-            //
-            //             //if ()
-            //
-		        //             break;
-		        //         case "2":
-		        //         case "b":
-            //         case "3":
-            //         case "c":
-            //             if (dir < 18) dir = dir + speed;
-            //             else if (dir > -23) dir = dir - speed;
-            //             else dir = dir;
-		        //             break;
-            //         case "4":
-		        //         case "d":
-		        //             if (dir > -23) dir = dir - speed;
-		        //             else dir = dir;
-		        //             break;
-		        //         case "para":
-		        //             dir = dir;
-		        //             break;
-            //     }
-            // }
+                if(!chegou) {
 
-            if(destino != origem){
-                if(destino > origem) {
-                    if (dir < 18) dir = dir + speed;
-                } else if (destino < origem /**/) {
-                    if (dir > -23) dir = dir - speed;
-                }
+                posZ = (transform.position + Vector3.forward * speed * dir * Time.fixedDeltaTime).z;
 
-                if(!chegou){
-                    posZ = (transform.position + Vector3.forward * speed * dir * Time.fixedDeltaTime).z;
+                if (destino != origem)
+                    {
+                        if (destino > origem)
+                        {
+                            if (dir < 18) dir = dir + speed;
+                        }
+                        else if (destino < origem /**/)
+                        {
+                            if (dir > -23) dir = dir - speed;
+                    }
+
                     if(destino > origem /* subindo */){
                         if(posZ > destino){
                             posZ = (float) destino;

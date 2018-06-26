@@ -7,8 +7,9 @@ public class PhysicBall : MonoBehaviour {
 
     public Vector3 startForce;
     public ForceMode mode;
+    public Vector3 forcaContinua;
     private GameManager gm;
-    private int pf = 30;
+    private int pf = 50;
     private int bateu = 0; // 1 == jogador branco bateu na bolinha, 2 == jogador  bateu na bolinha, 0 == ninguem bateu
     private GameObject aux;
     // Use this for initialization
@@ -18,7 +19,7 @@ public class PhysicBall : MonoBehaviour {
 	}
     private void OnTriggerExit(Collider other)
     {
-        startForce = new Vector3(5, 0, 10); //Coloca a bolinha com a força original
+        startForce = forcaContinua; //Coloca a bolinha com a força original
 
         //if leaves the boundary collider, game over
         if (other.gameObject.tag == "Boundary")
@@ -28,7 +29,7 @@ public class PhysicBall : MonoBehaviour {
     }
     private void OnTriggerEnter(Collider other)
     {
-        startForce = new Vector3(5, 0, 10); //Coloca a bolinha com a força original
+        startForce = forcaContinua; //Coloca a bolinha com a força original
 
         if (other.gameObject.tag == "PowerUp")
         {
@@ -55,7 +56,7 @@ public class PhysicBall : MonoBehaviour {
 
     private void OnCollisionEnter(Collision collision)
     {
-        startForce = new Vector3(5, 0, 10); //Coloca a bolinha com a força original
+        startForce = forcaContinua; //Coloca a bolinha com a força original
         // Se o menu está ativo, a "bolinha" fica travada
         if (collision.transform.gameObject.tag == "Bolinha")
         {
